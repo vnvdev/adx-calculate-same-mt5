@@ -75,4 +75,4 @@ df['time'] = pd.to_datetime(df['time'], unit='s')
 #My Adx Function Same Mt5
 df['ADX7_MT5'] = ADX(df['high'], df['low'], df['close'], 7)
 #Talib Adx Function Wrong with MT5
-df['ADX7_TALIB'] = talib.ADX(df['high'], df['low'], df['close'], timeperiod=21)
+df['ADX7_TALIB'] = talib.ADX(df['high'], df['low'], df['close'], timeperiod=7)
