@@ -1,9 +1,12 @@
+import numpy as np
+import MetaTrader5 as mt5
 import pandas as pd
-#Note data have open, high, low, close column
+import time
+import math
+import talib
+import datetime 
 
-df = pd.read_csv('exampledata.csv')
 
-#Calculate EMA for ADX
 def ExponentialMA(i, period, prev_value, values):
     if i == 0:
         return prev_value
@@ -11,7 +14,7 @@ def ExponentialMA(i, period, prev_value, values):
         ema = (values[i] - prev_value) * 2 / (period + 1) + prev_value
         return ema
 
-def calculate_adx(high, low, close, adx_period):
+def ADX(high, low, close, adx_period):
     # Initialize the PDI and NDI arrays with the same length as the input arrays
     pdi = [0] * len(high)
     ndi = [0] * len(high)
@@ -67,13 +70,9 @@ def calculate_adx(high, low, close, adx_period):
     
     # Return the ADX array
     return adx
-# Extract the 'high', 'low', and 'close' columns from the DataFrame
-high = df['high'].to_numpy()
-low = df['low'].to_numpy()
-close = df['close'].to_numpy()
-
-# Calculate the ADX values
-adx = calculate_adx(high, low, close, 14)
-
-# Add the ADX values to the DataFrame
-df['ADX'] = adx
+df = pd.DataFrame(mt5.copy_rates_from_pos("EURUSD", mt5.TIMEFRAME_M15, 0, 5000))
+df['time'] = pd.to_datetime(df['time'], unit='s')
+#My Adx Function Same Mt5
+df['ADX7_MT5'] = ADX(df['high'], df['low'], df['close'], 7)
+#Talib Adx Function Wrong with MT5
+df['ADX7_TALIB'] = talib.ADX(df['high'], df['low'], df['close'], timeperiod=21)
